@@ -10,6 +10,7 @@ type ProfileContextValue = {
   profile: UserProfile | null;
   checkins: CheckIn[];
   loading: boolean;
+  error: string | null;
   refresh: () => Promise<void>;
   upsertProfile: (profile: UserProfile) => Promise<void>;
   addCheckIn: (input: Pick<CheckIn, "moodScore" | "moodEmoji" | "triggers" | "journalText">) => Promise<void>;
@@ -22,24 +23,35 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [checkins, setCheckins] = useState<CheckIn[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     if (!user) {
       setProfile(null);
       setCheckins([]);
+      setError(null);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    const nextProfile = await getProfile(user.uid);
-    setProfile(nextProfile);
-    setCheckins(await getCheckins(user.uid));
-    setLoading(false);
+    setError(null);
+
+    try {
+      const nextProfile = await getProfile(user.uid);
+      setProfile(nextProfile);
+      setCheckins(await getCheckins(user.uid));
+    } catch (loadError) {
+      setProfile(null);
+      setCheckins([]);
+      setError(loadError instanceof Error ? loadError.message : "Could not load your MindTrack profile.");
+    } finally {
+      setLoading(false);
+    }
   }, [user]);
 
   useEffect(() => {
-    void refresh();
+    queueMicrotask(() => void refresh());
   }, [refresh]);
 
   const value = useMemo<ProfileContextValue>(
@@ -47,6 +59,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       profile,
       checkins,
       loading,
+      error,
       refresh,
       upsertProfile: async (nextProfile) => {
         const saved = await saveProfile(nextProfile);
@@ -68,7 +81,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         setCheckins((items) => [saved, ...items]);
       }
     }),
-    [checkins, loading, profile, refresh, user]
+    [checkins, error, loading, profile, refresh, user]
   );
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

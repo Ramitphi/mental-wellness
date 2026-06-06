@@ -9,7 +9,7 @@ import type { ExamPhase, ExamType } from "@/lib/types";
 import { examPhases, examTypes } from "@/lib/wellness";
 
 export default function SettingsPage() {
-  const { signOutUser, isDemoMode } = useAuth();
+  const { signOutUser, isDemoMode, authActionLoading, authError } = useAuth();
   const { profile, upsertProfile } = useProfile();
   const [alias, setAlias] = useState(profile?.alias ?? "");
   const [examType, setExamType] = useState<ExamType>(profile?.examType ?? "JEE");
@@ -102,9 +102,14 @@ export default function SettingsPage() {
             This is a supportive wellness tool, not therapy or medical diagnosis. For urgent support in India, call Tele
             MANAS at 14416 or 1800-89-14416.
           </p>
-          <button className="btn btn-ghost" type="button" onClick={() => void signOutUser()}>
+          {authError ? (
+            <p className="alert card" role="alert">
+              {authError}
+            </p>
+          ) : null}
+          <button className="btn btn-ghost" type="button" disabled={authActionLoading} onClick={() => void signOutUser()}>
             <LogOut aria-hidden="true" size={18} />
-            Sign out
+            {authActionLoading ? "Signing out..." : "Sign out"}
           </button>
         </section>
       </form>

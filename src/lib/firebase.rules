@@ -2,11 +2,72 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validUserProfile(userId) {
+      return request.resource.data.keys().hasOnly([
+        "uid",
+        "alias",
+        "email",
+        "ageBand",
+        "examType",
+        "examPhase",
+        "supportPreference",
+        "reminderTime",
+        "createdAt",
+        "updatedAt"
+      ])
+      && request.resource.data.keys().hasAll(["uid", "alias", "ageBand", "examType", "examPhase", "reminderTime"])
+      && request.resource.data.uid == userId
+      && request.resource.data.alias is string
+      && request.resource.data.alias.size() >= 2
+      && request.resource.data.alias.size() <= 24
+      && request.resource.data.ageBand in ["under-15", "15-17", "18-21", "22-plus"]
+      && request.resource.data.examType in ["Boards", "NEET", "JEE", "CUET", "CAT", "GATE", "UPSC", "Other"]
+      && request.resource.data.examPhase in ["preparing", "exam-week", "waiting-results", "post-result"]
+      && request.resource.data.reminderTime is string
+      && request.resource.data.reminderTime.size() == 5;
+    }
+
+    function validCheckIn() {
+      return request.resource.data.keys().hasOnly([
+        "moodScore",
+        "moodEmoji",
+        "triggers",
+        "journalText",
+        "suggestedSupportId",
+        "createdAt"
+      ])
+      && request.resource.data.keys().hasAll([
+        "moodScore",
+        "moodEmoji",
+        "triggers",
+        "journalText",
+        "suggestedSupportId",
+        "createdAt"
+      ])
+      && request.resource.data.moodScore is int
+      && request.resource.data.moodScore >= 1
+      && request.resource.data.moodScore <= 5
+      && request.resource.data.moodEmoji is string
+      && request.resource.data.triggers is list
+      && request.resource.data.triggers.size() <= 6
+      && request.resource.data.journalText is string
+      && request.resource.data.journalText.size() <= 800
+      && request.resource.data.suggestedSupportId is string;
+    }
+
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId) && validUserProfile(userId);
+      allow delete: if false;
 
       match /checkins/{checkinId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && validCheckIn();
+        allow update, delete: if false;
       }
     }
 

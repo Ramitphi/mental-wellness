@@ -19,13 +19,16 @@ export function AppFrame({ children, requireProfile = true }: { children: React.
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
+  const { profile, loading: profileLoading, error: profileError } = useProfile();
 
   useEffect(() => {
     if (authLoading || profileLoading) return;
-    if (!user) router.replace("/login");
-    if (user && requireProfile && !profile) router.replace("/onboarding");
-  }, [authLoading, profileLoading, profile, requireProfile, router, user]);
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+    if (requireProfile && !profile && !profileError) router.replace("/onboarding");
+  }, [authLoading, profileError, profileLoading, profile, requireProfile, router, user]);
 
   if (authLoading || profileLoading) {
     return (
@@ -43,7 +46,21 @@ export function AppFrame({ children, requireProfile = true }: { children: React.
   return (
     <main className="page-shell">
       <section className="phone-frame">
-        {children}
+        {user && profileError ? (
+          <div className="screen stack">
+            <div>
+              <p className="eyebrow">Firebase setup</p>
+              <h1>MindTrack could not reach Firestore.</h1>
+              <p className="muted">{profileError}</p>
+            </div>
+            <section className="card alert stack">
+              <h2>Check these before retrying</h2>
+              <p>Make sure Firestore is created, Google auth is enabled, and the rules in this repo are deployed.</p>
+            </section>
+          </div>
+        ) : (
+          children
+        )}
         {requireProfile && user && profile ? (
           <nav className="bottom-nav" aria-label="Main navigation">
             {navItems.map((item) => {

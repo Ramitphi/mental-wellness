@@ -15,7 +15,17 @@ Open `http://localhost:3000`.
 
 ## Firebase Setup
 
-Create `.env.local` with:
+1. Create a Firebase project at `console.firebase.google.com`.
+2. In Firebase Console, add a Web app and copy the Firebase config values.
+3. Enable Authentication:
+   - Go to Authentication > Sign-in method.
+   - Enable Google.
+   - Add your local and deployed domains to Authorized domains.
+4. Enable Firestore Database:
+   - Create a Firestore database.
+   - Start in production mode.
+   - Deploy the rules in `src/lib/firebase.rules`.
+5. Copy `.env.local.example` to `.env.local` and fill in:
 
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=
@@ -27,6 +37,14 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 ```
 
 When Firebase values are not present, the app uses a local demo profile so the interface can be previewed immediately.
+
+Deploy Firestore rules with the Firebase CLI:
+
+```bash
+npx firebase-tools login
+npx firebase-tools use <your-project-id>
+npx firebase-tools deploy --only firestore:rules,firestore:indexes
+```
 
 ## Safety
 

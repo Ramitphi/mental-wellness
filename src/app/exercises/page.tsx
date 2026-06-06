@@ -41,8 +41,8 @@ function ExercisesContent() {
             Breathe
           </div>
           <ol className="stack" aria-label={`${exercise.title} steps`}>
-            {exercise.steps.map((step) => (
-              <li key={step}>{step}</li>
+            {exercise.steps.map((step, index) => (
+              <li key={`${step}-${index}`}>{step}</li>
             ))}
           </ol>
         </section>

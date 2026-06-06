@@ -7,6 +7,8 @@ import { auth, googleProvider, hasFirebaseConfig } from "@/lib/firebase";
 type AuthContextValue = {
   user: Pick<User, "uid" | "email" | "displayName"> | null;
   loading: boolean;
+  authActionLoading: boolean;
+  authError: string | null;
   signIn: () => Promise<void>;
   signOutUser: () => Promise<void>;
   isDemoMode: boolean;
@@ -23,12 +25,16 @@ const demoUser = {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthContextValue["user"] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authActionLoading, setAuthActionLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!auth) {
-      const storedDemo = window.localStorage.getItem("mw-demo-user");
-      setUser(storedDemo ? demoUser : null);
-      setLoading(false);
+      queueMicrotask(() => {
+        const storedDemo = window.localStorage.getItem("mw-demo-user");
+        setUser(storedDemo ? demoUser : null);
+        setLoading(false);
+      });
       return;
     }
 
@@ -42,27 +48,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       loading,
+      authActionLoading,
+      authError,
       isDemoMode: !hasFirebaseConfig,
       signIn: async () => {
-        if (!auth) {
-          window.localStorage.setItem("mw-demo-user", "true");
-          setUser(demoUser);
-          return;
-        }
+        setAuthActionLoading(true);
+        setAuthError(null);
 
-        await signInWithPopup(auth, googleProvider);
+        try {
+          if (!auth) {
+            window.localStorage.setItem("mw-demo-user", "true");
+            setUser(demoUser);
+            return;
+          }
+
+          await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+          setAuthError(error instanceof Error ? error.message : "Sign-in failed. Please try again.");
+        } finally {
+          setAuthActionLoading(false);
+        }
       },
       signOutUser: async () => {
-        if (!auth) {
-          window.localStorage.removeItem("mw-demo-user");
-          setUser(null);
-          return;
-        }
+        setAuthActionLoading(true);
+        setAuthError(null);
 
-        await signOut(auth);
+        try {
+          if (!auth) {
+            window.localStorage.removeItem("mw-demo-user");
+            setUser(null);
+            return;
+          }
+
+          await signOut(auth);
+        } catch (error) {
+          setAuthError(error instanceof Error ? error.message : "Sign-out failed. Please try again.");
+        } finally {
+          setAuthActionLoading(false);
+        }
       }
     }),
-    [loading, user]
+    [authActionLoading, authError, loading, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

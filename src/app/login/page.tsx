@@ -9,12 +9,12 @@ import { useProfile } from "@/components/ProfileProvider";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading, signIn, isDemoMode } = useAuth();
-  const { profile } = useProfile();
+  const { user, loading, signIn, isDemoMode, authActionLoading, authError } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
 
   useEffect(() => {
-    if (!loading && user) router.replace(profile ? "/dashboard" : "/onboarding");
-  }, [loading, profile, router, user]);
+    if (!loading && !profileLoading && user) router.replace(profile ? "/dashboard" : "/onboarding");
+  }, [loading, profile, profileLoading, router, user]);
 
   return (
     <AppFrame requireProfile={false}>
@@ -34,29 +34,36 @@ export default function LoginPage() {
             A mobile-first tracker for board and competitive exam students to track mood, notice triggers, and return
             to steady focus.
           </p>
-          <button className="btn btn-primary" onClick={() => void signIn()}>
+          <button className="btn btn-primary" disabled={authActionLoading} onClick={() => void signIn()}>
             <ShieldCheck aria-hidden="true" size={20} />
-            Enter with Google
+            {authActionLoading ? "Opening..." : isDemoMode ? "Enter demo mode" : "Enter with Google"}
           </button>
-          {isDemoMode ? (
-            <p className="muted">
-              Firebase is not configured yet, so this button opens a local hackathon demo account.
+          {authError ? (
+            <p className="alert card" role="alert">
+              {authError}
             </p>
           ) : null}
+          {isDemoMode ? (
+            <p className="muted">
+              Firebase keys are not configured yet, so this button opens a local hackathon demo account.
+            </p>
+          ) : (
+            <p className="muted">Google verifies your account; MindTrack shows only the alias you choose.</p>
+          )}
         </section>
 
         <section className="card stack">
-          <h2>Built for honest check-ins</h2>
+          <h2>Flow for the demo</h2>
           <div className="bento-grid">
             <div className="bento-tile">
               <Sprout aria-hidden="true" size={18} />
-              <h3>Alias first</h3>
-              <p className="muted">The app uses a private display name instead of showing your Google profile.</p>
+              <h3>1. Enter</h3>
+              <p className="muted">Use Google auth or local demo mode without exposing your profile name in the app.</p>
             </div>
             <div className="bento-tile">
               <ShieldCheck aria-hidden="true" size={18} />
-              <h3>Non-clinical</h3>
-              <p className="muted">Supportive tools, no diagnosis, and clear guidance for high distress.</p>
+              <h3>2. Set alias</h3>
+              <p className="muted">Choose exam context, current phase, and a private display name.</p>
             </div>
           </div>
         </section>
