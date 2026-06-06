@@ -3,8 +3,8 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MindTrack Exams",
-  description: "Private mental wellness tracker for Indian exam students"
+  title: "MindTrack",
+  description: "A private focus and mental wellness tracker for Indian exam students"
 };
 
 export const viewport: Viewport = {

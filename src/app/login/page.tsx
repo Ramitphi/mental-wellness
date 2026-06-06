@@ -1,6 +1,6 @@
 "use client";
 
-import { HeartPulse, ShieldCheck } from "lucide-react";
+import { DoorOpen, ShieldCheck, Sprout } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AppFrame } from "@/components/AppFrame";
@@ -21,21 +21,22 @@ export default function LoginPage() {
       <div className="screen stack">
         <div className="topbar">
           <div>
-            <p className="eyebrow">MindTrack Exams</p>
-            <h1>Private check-ins for exam season.</h1>
+            <p className="eyebrow">The Threshold</p>
+            <h1>MindTrack</h1>
+            <p className="muted">A quiet, anonymous entry point before exam pressure follows you in.</p>
           </div>
-          <HeartPulse aria-hidden="true" color="var(--green)" size={34} />
+          <DoorOpen aria-hidden="true" color="var(--green)" size={34} />
         </div>
 
-        <section className="card stack">
-          <h2>Track the pressure before it piles up</h2>
+        <section className="card hero-card stack">
+          <h2>Step in without performing</h2>
           <p className="muted">
-            Built for Indian board and competitive exam students to notice mood, triggers, and recovery habits in a
-            simple mobile web app.
+            A mobile-first tracker for board and competitive exam students to track mood, notice triggers, and return
+            to steady focus.
           </p>
           <button className="btn btn-primary" onClick={() => void signIn()}>
             <ShieldCheck aria-hidden="true" size={20} />
-            Continue with Google
+            Enter with Google
           </button>
           {isDemoMode ? (
             <p className="muted">
@@ -45,13 +46,15 @@ export default function LoginPage() {
         </section>
 
         <section className="card stack">
-          <h2>Why students can be honest here</h2>
-          <div className="grid-two">
-            <div>
+          <h2>Built for honest check-ins</h2>
+          <div className="bento-grid">
+            <div className="bento-tile">
+              <Sprout aria-hidden="true" size={18} />
               <h3>Alias first</h3>
               <p className="muted">The app uses a private display name instead of showing your Google profile.</p>
             </div>
-            <div>
+            <div className="bento-tile">
+              <ShieldCheck aria-hidden="true" size={18} />
               <h3>Non-clinical</h3>
               <p className="muted">Supportive tools, no diagnosis, and clear guidance for high distress.</p>
             </div>

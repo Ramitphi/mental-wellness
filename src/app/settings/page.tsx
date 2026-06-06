@@ -36,7 +36,7 @@ export default function SettingsPage() {
       <form className="screen stack" onSubmit={(event) => void submit(event)}>
         <div>
           <p className="eyebrow">Settings</p>
-          <h1>Keep support matched to your season.</h1>
+          <h1>Tune MindTrack.</h1>
         </div>
 
         <section className="card stack">

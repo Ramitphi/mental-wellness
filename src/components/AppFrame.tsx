@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, BookOpen, Dumbbell, Settings } from "lucide-react";
+import { Activity, BookOpen, Dumbbell, MessageCircle, Settings } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 import { useProfile } from "./ProfileProvider";
 
 const navItems = [
-  { href: "/dashboard", label: "Today", icon: Activity },
+  { href: "/dashboard", label: "Sanctuary", icon: Activity },
   { href: "/journal", label: "Journal", icon: BookOpen },
-  { href: "/exercises", label: "Reset", icon: Dumbbell },
+  { href: "/exercises", label: "Breath", icon: Dumbbell },
+  { href: "/listener", label: "Listener", icon: MessageCircle },
   { href: "/settings", label: "Settings", icon: Settings }
 ];
 
@@ -31,8 +32,8 @@ export function AppFrame({ children, requireProfile = true }: { children: React.
       <main className="page-shell">
         <section className="phone-frame">
           <div className="screen">
-            <p className="eyebrow">MindTrack Exams</p>
-            <h1>Loading your calm space</h1>
+            <p className="eyebrow">MindTrack</p>
+            <h1>Opening your calm space</h1>
           </div>
         </section>
       </main>

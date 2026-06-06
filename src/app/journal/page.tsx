@@ -11,8 +11,8 @@ export default function JournalPage() {
       <div className="screen stack">
         <div>
           <p className="eyebrow">Journal</p>
-          <h1>Your private pattern log.</h1>
-          <p className="muted">Entries are ordered newest first and only visible to your account.</p>
+          <h1>Your reflection shelf.</h1>
+          <p className="muted">A quiet record of emotional patterns, ordered newest first.</p>
         </div>
 
         {checkins.length === 0 ? (

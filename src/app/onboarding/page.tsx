@@ -38,12 +38,12 @@ export default function OnboardingPage() {
     <AppFrame requireProfile={false}>
       <form className="screen stack" onSubmit={(event) => void submit(event)}>
         <div>
-          <p className="eyebrow">Onboarding</p>
-          <h1>Set up your private exam space.</h1>
-          <p className="muted">A few light details help the app suggest support that matches your season.</p>
+          <p className="eyebrow">The Intention</p>
+          <h1>Set the context gently.</h1>
+          <p className="muted">A few light details help MindTrack adapt without asking you to over-explain.</p>
         </div>
 
-        <section className="card stack">
+        <section className="card hero-card stack">
           <div className="field">
             <label htmlFor="alias">Anonymous alias</label>
             <input

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlarmClock, ArrowRight, LifeBuoy } from "lucide-react";
+import { AlarmClock, ArrowRight, BookOpenCheck, LifeBuoy, Sparkles } from "lucide-react";
 import { AppFrame } from "@/components/AppFrame";
 import { CheckInForm } from "@/components/CheckInForm";
 import { useProfile } from "@/components/ProfileProvider";
@@ -23,14 +23,14 @@ export default function DashboardPage() {
       <div className="screen stack">
         <header className="topbar">
           <div>
-            <p className="eyebrow">{profile?.examType} wellness</p>
+            <p className="eyebrow">The Sanctuary</p>
             <h1>Hi, {profile?.alias ?? "student"}.</h1>
-            <p className="muted">Reminder set for {profile?.reminderTime ?? "21:30"}.</p>
+            <p className="muted">{profile?.examType} support, reminder at {profile?.reminderTime ?? "21:30"}.</p>
           </div>
           <AlarmClock aria-hidden="true" color="var(--blue)" size={30} />
         </header>
 
-        <section className="metric-grid" aria-label="Seven day summary">
+        <section className="metric-grid bento-band" aria-label="Seven day summary">
           <div className="metric">
             <span className="muted">Average mood</span>
             <strong>{summary.average || "—"}</strong>
@@ -41,7 +41,7 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="card stack">
+        <section className="card hero-card stack">
           <div>
             <h2>Last 7 check-ins</h2>
             <p className="muted">{summary.checkInCount ? "Small patterns are enough to start." : "Your chart appears after the first check-in."}</p>
@@ -78,14 +78,28 @@ export default function DashboardPage() {
           </section>
         ) : null}
 
-        <section className="card stack">
+        <section className="card ritual-card stack">
           <div>
+            <p className="eyebrow">Suggested ritual</p>
             <h2>{suggestion.title}</h2>
             <p className="muted">{suggestion.body}</p>
           </div>
           <Link className="btn btn-secondary" href={`/exercises?exercise=${suggestion.exerciseId}`}>
             {suggestion.actionLabel}
             <ArrowRight aria-hidden="true" size={18} />
+          </Link>
+        </section>
+
+        <section className="bento-grid">
+          <Link className="bento-tile link-tile" href="/journal">
+            <BookOpenCheck aria-hidden="true" size={20} />
+            <h3>Reflect</h3>
+            <p className="muted">Read the last few emotional notes without judgment.</p>
+          </Link>
+          <Link className="bento-tile link-tile" href="/listener">
+            <Sparkles aria-hidden="true" size={20} />
+            <h3>Listener</h3>
+            <p className="muted">Draft a gentle letter to what feels heavy.</p>
           </Link>
         </section>
 

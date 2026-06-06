@@ -31,12 +31,12 @@ function ExercisesContent() {
     <AppFrame>
       <div className="screen stack">
         <div>
-          <p className="eyebrow">Reset exercises</p>
+          <p className="eyebrow">The Breath</p>
           <h1>{exercise.title}</h1>
-          <p className="muted">{exercise.duration}. Use this before returning to study or sleep.</p>
+          <p className="muted">{exercise.duration}. A full-screen ritual before returning to study or sleep.</p>
         </div>
 
-        <section className="card stack">
+        <section className="card breath-stage stack">
           <div className="exercise-orb" aria-hidden="true">
             Breathe
           </div>

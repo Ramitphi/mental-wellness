@@ -1,6 +1,6 @@
-# Mental Wellness Tracker
+# MindTrack
 
-A mobile-first Next.js + Firebase web app for Indian board and competitive exam students to privately track mood, journal stress triggers, practice short grounding exercises, and spot recent wellness patterns.
+A mobile-first Next.js + Firebase web app for Indian board and competitive exam students to privately track mood, journal stress triggers, practice short grounding rituals, and spot recent wellness patterns.
 
 ## Getting Started
 
