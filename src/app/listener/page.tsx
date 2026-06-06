@@ -11,6 +11,29 @@ const prompts = [
   "Who is one safe person you could update?"
 ];
 
+function buildReply(alias: string, letter: string): string {
+  const text = letter.toLowerCase();
+  const name = alias || "student";
+
+  if (text.includes("fail") || text.includes("disappoint") || text.includes("not good enough")) {
+    return `Dear ${name}, the fear of disappointing the people we love is one of the heaviest things to carry into an exam. That fear says nothing about your actual worth. Tonight, set the result aside and ask: what is one small thing I can do well in the next hour? Just one. That is enough for now.`;
+  }
+  if (text.includes("sleep") || text.includes("tired") || text.includes("exhausted")) {
+    return `Dear ${name}, rest is not wasted study time — it is the part of preparation that makes everything else stick. If sleep is escaping you tonight, try the box breathing exercise: 4 counts in, hold 4, out 4, hold 4. Your brain genuinely needs this. Protect it.`;
+  }
+  if (text.includes("compet") || text.includes("rank") || text.includes("topper") || text.includes("everyone else")) {
+    return `Dear ${name}, comparison is exhausting partly because it is always unfair — you see their highlight and your full reality. The only meaningful contest right now is between yesterday's version of you and today's. What did you understand today that you did not yesterday?`;
+  }
+  if (text.includes("family") || text.includes("parents") || text.includes("pressure") || text.includes("expect")) {
+    return `Dear ${name}, carrying someone else's expectations on top of your own is a double weight. You cannot control what others hope for, only what you do today. Is there one trusted person — a parent, sibling, or friend — you could tell one honest sentence to tonight? Sometimes saying it out loud makes it smaller.`;
+  }
+  if (text.includes("alone") || text.includes("lonely") || text.includes("nobody") || text.includes("no one")) {
+    return `Dear ${name}, feeling unseen during exam season is more common than the silence around it suggests. You are not the only one sitting with this. If reaching out feels too hard right now, write one more line in this space — it counts as speaking.`;
+  }
+
+  return `Dear ${name}, I hear that this exam season is asking a lot from you. For tonight, let us make the next step smaller: name the feeling, choose one recovery action, and tell one trusted person if it feels too heavy to hold alone.`;
+}
+
 export default function ListenerPage() {
   const { profile } = useProfile();
   const [letter, setLetter] = useState("");
@@ -21,9 +44,7 @@ export default function ListenerPage() {
     const trimmed = letter.trim();
     if (!trimmed) return;
 
-    setReply(
-      `Dear ${profile?.alias ?? "student"}, I hear that this exam season is asking a lot from you. For tonight, let us make the next step smaller: name the feeling, choose one recovery action, and tell one trusted person if it feels too heavy to hold alone.`
-    );
+    setReply(buildReply(profile?.alias ?? "student", trimmed));
   }
 
   return (

@@ -28,7 +28,9 @@ service cloud.firestore {
       && request.resource.data.examType in ["Boards", "NEET", "JEE", "CUET", "CAT", "GATE", "UPSC", "Other"]
       && request.resource.data.examPhase in ["preparing", "exam-week", "waiting-results", "post-result"]
       && request.resource.data.reminderTime is string
-      && request.resource.data.reminderTime.size() == 5;
+      && request.resource.data.reminderTime.size() == 5
+      && request.resource.data.reminderTime[2] == ":"
+      && request.resource.data.alias.matches('^[a-zA-Z0-9 _-]+$');
     }
 
     function validCheckIn() {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { AlarmClock, ArrowRight, BookOpenCheck, LifeBuoy, Sparkles } from "lucide-react";
 import { AppFrame } from "@/components/AppFrame";
 import { CheckInForm } from "@/components/CheckInForm";
@@ -9,13 +10,17 @@ import { getSevenDaySummary, getWellnessSuggestion, isHighDistress } from "@/lib
 
 export default function DashboardPage() {
   const { profile, checkins } = useProfile();
-  const summary = getSevenDaySummary(checkins);
+  const summary = useMemo(() => getSevenDaySummary(checkins), [checkins]);
   const latest = checkins[0];
-  const suggestion = getWellnessSuggestion({
-    moodScore: latest?.moodScore ?? 3,
-    examPhase: profile?.examPhase ?? "preparing",
-    triggers: latest?.triggers ?? []
-  });
+  const suggestion = useMemo(
+    () =>
+      getWellnessSuggestion({
+        moodScore: latest?.moodScore ?? 3,
+        examPhase: profile?.examPhase ?? "preparing",
+        triggers: latest?.triggers ?? []
+      }),
+    [latest, profile?.examPhase]
+  );
   const showSafety = latest ? isHighDistress(latest.moodScore, latest.triggers) : false;
 
   return (

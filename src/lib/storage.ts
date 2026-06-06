@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
   orderBy,
   query,
   serverTimestamp,
@@ -68,7 +69,9 @@ export async function saveProfile(profile: UserProfile) {
 export async function getCheckins(uid: string) {
   if (!db) return readLocalCheckins();
 
-  const snap = await getDocs(query(collection(db, "users", uid, "checkins"), orderBy("createdAt", "desc")));
+  const snap = await getDocs(
+    query(collection(db, "users", uid, "checkins"), orderBy("createdAt", "desc"), limit(20))
+  );
   return snap.docs.map((item) => ({ id: item.id, ...item.data() })) as CheckIn[];
 }
 

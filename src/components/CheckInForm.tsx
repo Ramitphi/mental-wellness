@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { Send } from "lucide-react";
 import { useProfile } from "./ProfileProvider";
-import { moodOptions, triggerOptions, validateCheckIn } from "@/lib/wellness";
+import { moodOptions, sanitizeText, triggerOptions, validateCheckIn } from "@/lib/wellness";
 
 export function CheckInForm() {
   const { addCheckIn } = useProfile();
@@ -29,7 +29,7 @@ export function CheckInForm() {
       moodScore,
       moodEmoji: mood?.emoji ?? "😐",
       triggers,
-      journalText: journalText.trim()
+      journalText: sanitizeText(journalText)
     });
     setMoodScore(0);
     setTriggers([]);

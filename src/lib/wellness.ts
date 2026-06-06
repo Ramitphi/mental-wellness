@@ -28,6 +28,11 @@ export const triggerOptions = [
   "Results"
 ];
 
+export function sanitizeText(text: string): string {
+  // Strip control characters except newline/tab, then trim
+  return text.replace(/[^\x09\x0A\x20-\x7E -￿]/g, "").trim();
+}
+
 export function validateCheckIn(input: Pick<CheckIn, "moodScore" | "journalText" | "triggers">) {
   if (!Number.isInteger(input.moodScore) || input.moodScore < 1 || input.moodScore > 5) {
     return "Choose how you are feeling before saving.";
@@ -39,6 +44,10 @@ export function validateCheckIn(input: Pick<CheckIn, "moodScore" | "journalText"
 
   if (input.triggers.length > 6) {
     return "Choose up to six triggers.";
+  }
+
+  if (!input.triggers.every((t) => triggerOptions.includes(t))) {
+    return "One or more selected triggers are not valid.";
   }
 
   return null;
